@@ -22,6 +22,8 @@ public class CheckPlayerPOS : MonoBehaviour {
 
     public Text PositionNum;
 
+    public int Lap = 1;
+
 	// Use this for initialization
 	void Start () {
         DummyChecks = Checkpoints;
@@ -40,64 +42,65 @@ public class CheckPlayerPOS : MonoBehaviour {
         Checkpoints = DummyChecks;
     }
 
-
-    private void SetLap()
-    {
-
-    }
-
+    // On trigger remove first in list of checkpoints 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             Player.RemoveCheckpoint();
+            CheckPositionForCars();
+            SetPosition();
+            if (Player.Checkpoints.Count <= 1)
+            {
+                SetLapPlayer();
+                Debug.Log("NextLap");
+            }
+            Debug.Log("Player Checkpoints" + Player.Checkpoints.Count);
         }
 
         if (other.CompareTag("Racer"))
         {
             other.gameObject.GetComponent<CarController>().RemoveCheckpoint();
+            CheckPositionForCars();
+            SetPosition();
+            //Debug.Log("Racer Checkpoints" + Racer.Checkpoints.Count);
         }
     }
 
+    //Checking position of user and racer
     private void CheckPositionForCars()
     {
-        for (int i = 0; i < CarList.Count; i++)
-        {
-           EnemyLap[i] = CarList[i].GetComponent<CarController>().GetLapNum();
-        }
-
-        for (int i = 0; i < EnemyLap.Count; i++)
-        {
-            if (Player.GetLapNum() > EnemyLap[i])
-            {
-                Position = 1;
-            }
-        }
         if (Player.Checkpoints.Count > Racer.Checkpoints.Count)
-        {
-            Position = 1;
-        }
-        else if (Player.Checkpoints.Count < Racer.Checkpoints.Count)
         {
             Position = 2;
         }
+        else if (Player.Checkpoints.Count < Racer.Checkpoints.Count)
+        {
+            Position = 1;
+        }
     }
 
+    private void SetLapPlayer()
+    {
+        Player.SetLapNum(Lap + 1);
+    }
+
+    private void SetLap()
+    {
+        LapNum.text = Lap.ToString();
+    }
 
     // Update is called once per frame
     void Update () {
-        if (Player.Checkpoints.Count == 1)
+        if (Player.Checkpoints.Count == 0)
         {
             Player.ResetCheckpoints();
-            Player.SetLapNum(Player.GetLapNum() + 1);
         }
 
-        if (Racer.Checkpoints.Count == 1)
+        if (Racer.Checkpoints.Count == 0)
         {
-            Racer.ResetCheckpoints();
             Racer.SetLapNum(Racer.GetLapNum() + 1);
+            Racer.ResetCheckpoints();
         }
-        CheckPositionForCars();
-        SetPosition();
 	}
 }

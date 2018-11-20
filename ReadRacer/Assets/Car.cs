@@ -142,9 +142,9 @@ public class Car : MonoBehaviour
 	}
 
     // setter for what lap the player is on 
-    public void SetLapNum(int Lap)
+    public void SetLapNum(int lap)
     {
-        LapNumber = Lap;
+        LapNumber = lap;
     }
 
     // Getter for the lap the player is on

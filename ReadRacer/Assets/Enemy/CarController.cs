@@ -64,6 +64,8 @@ public class CarController : MonoBehaviour
         DummyChecks = new List<GameObject>();
         SetDummyList();
 	}
+
+    // Sets dummylist to checkpoint list
     private void SetDummyList()
     {
         for (int i = 0; i < Checkpoints.Count; i++)
